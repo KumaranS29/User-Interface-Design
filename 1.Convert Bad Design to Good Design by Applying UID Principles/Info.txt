@@ -1,0 +1,34 @@
+Visual Hierarchy:
+
+Bad Design: Information is presented in a plain list format with no emphasis on key details. The price, title, and location blend into the text and are difficult to quickly identify.
+Good Design: Uses bold, larger fonts and color to emphasize the price and title. Important information like "For sale" is clearly labeled with a distinct badge.
+
+Alignment and Spacing:
+
+Bad Design: Text is left-aligned and closely packed, making it harder to read. The spacing is inconsistent.
+Good Design: Uses clean and consistent alignment. Spacing between elements makes the information more digestible.
+
+Icons and Visual Cues:
+
+Bad Design: Relies solely on text, which makes scanning slower.
+Good Design: Uses intuitive icons for location, square footage, bedrooms, and bathrooms, making the card more visually appealing and easier to scan quickly.
+
+Grouping and Structure:
+
+Bad Design: Information is listed line by line without clear sections, making it harder to distinguish categories.
+Good Design: Groups related information together—price and status, property details, and contact info—making it more organized.
+
+Typography and Readability:
+
+Bad Design: Uses the same font size and weight for most information, making it difficult to differentiate key elements.
+Good Design: Varies font size, weight, and color to create contrast and focus attention on important details.
+
+Aesthetics and Consistency:
+
+Bad Design: The design feels flat and lacks visual balance.
+Good Design: Uses rounded corners, clean lines, and better color contrast, creating a more modern and polished appearance.
+
+User Experience (UX):
+
+Bad Design: Provides all information without prioritization, making it overwhelming.
+Good Design: Prioritizes the most important details first (price, title, location) and simplifies contact information at the bottom.
