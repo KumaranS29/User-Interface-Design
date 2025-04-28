@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Validation Input Forms</title>
+  <title>Student Management Platform</title>
+
   <script src="https://cdn.jsdelivr.net/npm/validator@13.9.0/validator.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
   <style>
     * {
       box-sizing: border-box;
@@ -13,17 +15,38 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-      height: 100vh;
+      background: #f5f7fa;
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+    }
+
+    header {
+      background: #6c5ce7;
+      padding: 20px;
+      color: white;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      padding: 30px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      color: #2d3436;
     }
 
     .btn-open {
       padding: 14px 28px;
       font-size: 18px;
-      background: #6c5ce7;
+      background: #0984e3;
       color: white;
       border: none;
       border-radius: 10px;
@@ -32,9 +55,44 @@
     }
 
     .btn-open:hover {
-      background: #5a4dcf;
+      background: #0077cc;
     }
 
+    footer {
+      background: #dfe6e9;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      color: #636e72;
+    }
+
+    /* Table Styling */
+    .student-table {
+      margin-top: 40px;
+      width: 90%;
+      max-width: 1000px;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .student-table th, .student-table td {
+      padding: 12px 20px;
+      text-align: left;
+    }
+
+    .student-table thead {
+      background: #6c5ce7;
+      color: white;
+    }
+
+    .student-table tr:nth-child(even) {
+      background: #f1f1f1;
+    }
+
+    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -74,12 +132,6 @@
       font-size: 24px;
       color: #aaa;
       cursor: pointer;
-    }
-
-    h2 {
-      margin: 0 0 20px;
-      color: #2d3436;
-      text-align: center;
     }
 
     .form-group {
@@ -137,15 +189,45 @@
     }
   </style>
 </head>
+
 <body>
 
-<button class="btn-open">Open Form</button>
+<header>
+  Student Management Platform
+</header>
 
+<main>
+  <h2>Welcome to Your Student Dashboard</h2>
+  <p>Manage students efficiently. Click below to register a new student!</p>
+  <br />
+  <button class="btn-open">Add New Student</button>
+
+  <!-- Student Table -->
+  <table class="student-table" id="studentTable" style="display:none;">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Country</th>
+        <th>State</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</main>
+
+<footer>
+  &copy; 2025 Student Management Platform. All rights reserved.
+</footer>
+
+<!-- Modal -->
 <div class="modal" id="formModal">
   <div class="modal-content">
     <span class="close" id="closeModal">&times;</span>
-    <h2>Register Now</h2>
-    <form id="userForm" novalidate>
+    <h2>Register New Student</h2>
+    <form id="studentForm" novalidate>
       <div class="form-group">
         <label for="name">Full Name</label>
         <input type="text" id="name" />
@@ -188,7 +270,7 @@
         <div class="error" id="stateError"></div>
       </div>
 
-      <button type="submit">Submit</button>
+      <button type="submit">Register Student</button>
       <div class="success" id="successMsg"></div>
     </form>
   </div>
@@ -216,8 +298,8 @@
     });
   });
 
-  // Validation
-  document.getElementById('userForm').addEventListener('submit', function (e) {
+  // Validation & Adding Student to Table
+  document.getElementById('studentForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const name = document.getElementById("name").value.trim();
@@ -243,12 +325,12 @@
     let valid = true;
 
     if (name.length < 2 || /\d/.test(name)) {
-      errorMsgs.name.textContent = "Please enter a valid name.";
+      errorMsgs.name.textContent = "Please enter a valid full name.";
       valid = false;
     }
 
     if (!validator.isEmail(email)) {
-      errorMsgs.email.textContent = "Invalid email format.";
+      errorMsgs.email.textContent = "Invalid email address.";
       valid = false;
     }
 
@@ -258,7 +340,7 @@
     }
 
     if (!validator.isStrongPassword(password, { minLength: 8, minNumbers: 1, minSymbols: 1 })) {
-      errorMsgs.password.textContent = "Password must be 8+ chars, include number & symbol.";
+      errorMsgs.password.textContent = "Password must be strong (8+ characters, number, symbol).";
       valid = false;
     }
 
@@ -273,10 +355,34 @@
     }
 
     if (valid) {
-      errorMsgs.success.textContent = "🎉 Registration successful!";
+      // Success
+      errorMsgs.success.textContent = "🎉 Student registered successfully!";
+      addStudentToTable(name, email, phone, country, state);
       this.reset();
+      setTimeout(() => {
+        modal.style.display = "none";
+        errorMsgs.success.textContent = "";
+      }, 1500);
     }
   });
+
+  // Function to add student to the table
+  function addStudentToTable(name, email, phone, country, state) {
+    const table = document.getElementById('studentTable');
+    const tbody = table.querySelector('tbody');
+    const newRow = document.createElement('tr');
+
+    newRow.innerHTML = `
+      <td>${name}</td>
+      <td>${email}</td>
+      <td>${phone}</td>
+      <td>${country}</td>
+      <td>${state}</td>
+    `;
+
+    tbody.appendChild(newRow);
+    table.style.display = "table";
+  }
 </script>
 
 </body>
