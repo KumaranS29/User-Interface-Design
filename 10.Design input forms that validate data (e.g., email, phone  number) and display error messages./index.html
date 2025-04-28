@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Validation Input Forms</title>
+  <script src="https://cdn.jsdelivr.net/npm/validator@13.9.0/validator.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn-open {
+      padding: 14px 28px;
+      font-size: 18px;
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-open:hover {
+      background: #5a4dcf;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      padding: 30px;
+      width: 420px;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+      position: relative;
+      animation: pop 0.3s ease-out;
+    }
+
+    @keyframes pop {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      font-size: 24px;
+      color: #aaa;
+      cursor: pointer;
+    }
+
+    h2 {
+      margin: 0 0 20px;
+      color: #2d3436;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      transition: 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #6c5ce7;
+      outline: none;
+    }
+
+    .error {
+      font-size: 13px;
+      color: #d63031;
+      margin-top: 4px;
+    }
+
+    .success {
+      color: #00b894;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button[type="submit"]:hover {
+      background: #4e3db7;
+    }
+  </style>
+</head>
+<body>
+
+<button class="btn-open">Open Form</button>
+
+<div class="modal" id="formModal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h2>Register Now</h2>
+    <form id="userForm" novalidate>
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" />
+        <div class="error" id="nameError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="text" id="email" />
+        <div class="error" id="emailError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="text" id="phone" />
+        <div class="error" id="phoneError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" />
+        <div class="error" id="passwordError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="country">Country</label>
+        <select id="country">
+          <option value="">Select Country</option>
+          <option value="India">India</option>
+          <option value="USA">USA</option>
+        </select>
+        <div class="error" id="countryError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="state">State</label>
+        <select id="state">
+          <option value="">Select State</option>
+        </select>
+        <div class="error" id="stateError"></div>
+      </div>
+
+      <button type="submit">Submit</button>
+      <div class="success" id="successMsg"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Modal handling
+  const modal = document.getElementById("formModal");
+  document.querySelector(".btn-open").onclick = () => modal.style.display = "flex";
+  document.getElementById("closeModal").onclick = () => modal.style.display = "none";
+  window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+  // Dynamic states
+  const stateMap = {
+    India: ['Tamil Nadu', 'Kerala', 'Maharashtra', 'Delhi'],
+    USA: ['California', 'Texas', 'New York', 'Florida']
+  };
+
+  document.getElementById('country').addEventListener('change', function () {
+    const states = stateMap[this.value] || [];
+    const stateDropdown = document.getElementById('state');
+    stateDropdown.innerHTML = '<option value="">Select State</option>';
+    states.forEach(state => {
+      stateDropdown.innerHTML += `<option value="${state}">${state}</option>`;
+    });
+  });
+
+  // Validation
+  document.getElementById('userForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const country = document.getElementById("country").value;
+    const state = document.getElementById("state").value;
+
+    const errorMsgs = {
+      name: document.getElementById("nameError"),
+      email: document.getElementById("emailError"),
+      phone: document.getElementById("phoneError"),
+      password: document.getElementById("passwordError"),
+      country: document.getElementById("countryError"),
+      state: document.getElementById("stateError"),
+      success: document.getElementById("successMsg"),
+    };
+
+    // Reset errors
+    Object.values(errorMsgs).forEach(el => el.textContent = "");
+
+    let valid = true;
+
+    if (name.length < 2 || /\d/.test(name)) {
+      errorMsgs.name.textContent = "Please enter a valid name.";
+      valid = false;
+    }
+
+    if (!validator.isEmail(email)) {
+      errorMsgs.email.textContent = "Invalid email format.";
+      valid = false;
+    }
+
+    if (!validator.isMobilePhone(phone, 'en-IN') || phone.length !== 10) {
+      errorMsgs.phone.textContent = "Enter a valid 10-digit phone number.";
+      valid = false;
+    }
+
+    if (!validator.isStrongPassword(password, { minLength: 8, minNumbers: 1, minSymbols: 1 })) {
+      errorMsgs.password.textContent = "Password must be 8+ chars, include number & symbol.";
+      valid = false;
+    }
+
+    if (!country) {
+      errorMsgs.country.textContent = "Please select a country.";
+      valid = false;
+    }
+
+    if (!state) {
+      errorMsgs.state.textContent = "Please select a state.";
+      valid = false;
+    }
+
+    if (valid) {
+      errorMsgs.success.textContent = "🎉 Registration successful!";
+      this.reset();
+    }
+  });
+</script>
+
+</body>
+</html>
